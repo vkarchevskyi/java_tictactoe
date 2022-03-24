@@ -5,46 +5,43 @@ import java.util.Scanner;
 
 public class Controller {
 
-    // add enum to difficult level
-    public static int spaceNumber;
-    private char[][] board;
-    private Player player1 = null;
-    private Player player2 = null;
+    private static int spaceNumber; // count spaces on the board
+    private char[][] board; // game board
+    private Player player1 = null; // instance of first player
+    private Player player2 = null; // instance of second player
 
-    public Controller() {
-        initBoard();
-    }
-
-    public void initBoard() {
-        board = new char[Board.WIDTH][Board.HEIGHT];
-        spaceNumber = Board.WIDTH * Board.HEIGHT;
-        for (int i = 0; i < Board.HEIGHT; i++)
-            for (int j = 0; j < Board.WIDTH; j++) {
-                board[i][j] = ' ';
-            }
-    }
-
-
-    public void printBoard() {
-        // print upper edge
-        final String EDGE = "---------";
-        System.out.println(EDGE);
-        for (int i = 0; i < Board.HEIGHT; i++) {
-            for (int j = 0; j < Board.WIDTH; j++) {
-                int index = i * Board.WIDTH + j;
-                System.out.print(index % 3 == 0 ? "| " : ""); // print left board
-                System.out.print(board[i][j] + " "); // print
-                System.out.print(index % 3 == 2 ? "|\n" : ""); // print right board
-            }
-        }
-        // print bottom edge
-        System.out.println(EDGE);
-    }
-
+    /**
+     * return spaceNumber
+     * */
     public static int getSpaceNumber() {
         return spaceNumber;
     }
 
+    /**
+     * Increment spaceNumber variable
+     * */
+    public static void increaseSpaceNumbers() {
+        spaceNumber++;
+    }
+
+    /**
+     * Decrement spaceNumber variable
+     * */
+    public static void decreaseSpaceNumbers() {
+        spaceNumber--;
+    }
+
+    /**
+     * initialize the game board
+     * */
+    public Controller() {
+        initBoard();
+    }
+
+    /**
+     * Check if the game is over and stop the game
+     * in case of draw or if one side wins
+     * */
     private boolean isGameOver() {
 
         boolean xWins = winning(this.board, Board.X_SYMBOL);
@@ -67,6 +64,57 @@ public class Controller {
         return true;
     }
 
+    /**
+     * Restart game
+     * @param scanner - instance of Scanner class
+     * */
+    private void restartGame(Scanner scanner) {
+        if ("User".equals(this.player1.getClassName()) || "User".equals(this.player2.getClassName())){
+            scanner.nextLine();
+        }
+        System.out.println();
+        this.player1 = null;
+        this.player2 = null;
+        initBoard();
+    }
+
+    /**
+     * Initialize the game board with space symbols
+     * */
+    public void initBoard() {
+        board = new char[Board.WIDTH][Board.HEIGHT];
+        spaceNumber = Board.WIDTH * Board.HEIGHT;
+        for (int i = 0; i < Board.HEIGHT; i++)
+            for (int j = 0; j < Board.WIDTH; j++) {
+                board[i][j] = ' ';
+            }
+    }
+
+    /**
+     * Print the game board with corners and indents
+     * */
+    public void printBoard() {
+        // print upper edge
+        final String EDGE = "---------";
+        System.out.println(EDGE);
+        for (int i = 0; i < Board.HEIGHT; i++) {
+            for (int j = 0; j < Board.WIDTH; j++) {
+                int index = i * Board.WIDTH + j;
+                System.out.print(index % 3 == 0 ? "| " : ""); // print left board
+                System.out.print(board[i][j] + " "); // print
+                System.out.print(index % 3 == 2 ? "|\n" : ""); // print right board
+            }
+        }
+        // print bottom edge
+        System.out.println(EDGE);
+    }
+
+    /**
+     * Check all possible combination of winning and return
+     * the value "if this side wins"
+     * @param board - game board with the symbols
+     * @param symbol - game symbol of side
+     * */
     public static boolean winning(char[][] board, char symbol) {
         return  (board[0][0] == symbol && board[1][0] == symbol && board[2][0] == symbol) ||
                 (board[0][1] == symbol && board[1][1] == symbol && board[2][1] == symbol) ||
@@ -78,16 +126,12 @@ public class Controller {
                 (board[0][2] == symbol && board[1][1] == symbol && board[2][0] == symbol);
     }
 
-    private void restartGame(Scanner scanner) {
-        if ("User".equals(this.player1.getClassName()) || "User".equals(this.player2.getClassName())){
-            scanner.nextLine();
-        }
-        System.out.println();
-        this.player1 = null;
-        this.player2 = null;
-        initBoard();
-    }
-
+    /**
+     * Main function where game begins and ends.
+     * Handles the input and chooses the levels of players
+     * If the game stops (in case of winning or draw),
+     * restart the game or exit from program
+     * */
     public void run() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
